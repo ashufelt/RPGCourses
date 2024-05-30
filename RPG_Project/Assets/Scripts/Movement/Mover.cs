@@ -3,55 +3,60 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using RPG.Core;
 
-public class Mover : MonoBehaviour {
+namespace RPG.Movement {
 
-    const int LEFT_MOUSE_BUTTON = 0;
-    const int RIGHT_MOUSE_BUTTON = 1;
-    const int MIDDLE_MOUSE_BUTTON = 2;
+    public class Mover : MonoBehaviour, IAction {
 
-    [SerializeField] Transform target;
-    Ray lastRay;
+        NavMeshAgent navMeshAgent;
+        ActionScheduler actionScheduler;
+        Animator animator;
 
-    void Update() {
-        if (Input.GetMouseButton(RIGHT_MOUSE_BUTTON)) {
-            MoveToCursor();
-        }
-        UpdateAnimator();
-    }
-
-    private void MoveToCursor() {
-        NavMeshAgent navMeshAgent = this.GetComponent<NavMeshAgent>();
-        if (navMeshAgent == null) {
-            Debug.LogError("No NavMeshAgent found");
-            return;
+        private void Start() {
+            navMeshAgent = this.GetComponent<NavMeshAgent>();
+            actionScheduler = GetComponent<ActionScheduler>();
+            animator = this.GetComponent<Animator>();
         }
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        bool hasHit = Physics.Raycast(ray, out hit);
-
-        if (!hasHit) {
-            return;
-        }
-        navMeshAgent.destination = hit.point;
-    }
-
-    private void UpdateAnimator() {
-        NavMeshAgent navMeshAgent = this.GetComponent<NavMeshAgent>();
-        if (navMeshAgent == null) {
-            Debug.LogError("No NavMeshAgent found");
-            return;
-        }
-        Animator animator = this.GetComponent<Animator>();
-        if (animator == null) {
-            Debug.LogError("No Animator found");
-            return;
+        void Update() {
+            UpdateAnimator();
         }
 
-        Vector3 globalVelocity = navMeshAgent.velocity;
-        Vector3 localVelocity = transform.InverseTransformDirection(globalVelocity);
-        float speed = localVelocity.z;
-        animator.SetFloat("forwardSpeed", speed);
+        public void StartMoveAction(Vector3 dest) {
+            actionScheduler.StartAction(this);
+            MoveTo(dest);
+        }
+
+        public void MoveTo(Vector3 dest) {
+            if (navMeshAgent == null) {
+                Debug.LogError("No NavMeshAgent found");
+                return;
+            }
+            navMeshAgent.destination = dest;
+            navMeshAgent.isStopped = false;
+        }
+
+        public void Cancel() {
+            navMeshAgent.isStopped = true;
+        }
+
+        private void UpdateAnimator() {
+            if (navMeshAgent == null) {
+                Debug.LogError("No NavMeshAgent found");
+                navMeshAgent = this.GetComponent<NavMeshAgent>();
+                return;
+            }
+            if (animator == null) {
+                Debug.LogError("No Animator found");
+                animator = this.GetComponent<Animator>();
+                return;
+            }
+
+            Vector3 globalVelocity = navMeshAgent.velocity;
+            Vector3 localVelocity = transform.InverseTransformDirection(globalVelocity);
+            float speed = localVelocity.z;
+            animator.SetFloat("forwardSpeed", speed);
+        }
     }
 }
