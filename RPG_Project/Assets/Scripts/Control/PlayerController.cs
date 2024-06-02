@@ -15,6 +15,14 @@ namespace RPG.Control {
         const int RIGHT_MOUSE_BUTTON = 1;
         const int MIDDLE_MOUSE_BUTTON = 2;
 
+        private Mover mover;
+        private Fighter fighter;
+
+        private void Start() {
+            mover = this.GetComponent<Mover>();
+            fighter = this.GetComponent<Fighter>();
+        }
+
         private void Update() {
             if (InteractWithCombat()) return;
             if (InteractWithMovement()) return;
@@ -23,10 +31,11 @@ namespace RPG.Control {
         private bool InteractWithCombat() {
             RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
             foreach (RaycastHit hit in hits) {
-                CombatTarget target = hit.transform.GetComponent<CombatTarget>();
+                Health target = hit.transform.GetComponent<Health>();
                 if (target == null) continue;
+                if (!target.hasHP()) continue;
                 if (Input.GetMouseButtonDown(LEFT_MOUSE_BUTTON)) {
-                    this.GetComponent<Fighter>().Attack(target);
+                    fighter.Attack(target);
                     return true;
                 }
             }
@@ -35,10 +44,10 @@ namespace RPG.Control {
 
         private bool InteractWithMovement() {
             RaycastHit hit;
-            bool hasHit = Physics.Raycast(GetMouseRay(), out hit);
+            bool hasHit = Physics.Raycast(GetMouseRay(), out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Terrain"));
 
             if (hasHit && Input.GetMouseButton(RIGHT_MOUSE_BUTTON)) {
-                this.GetComponent<Mover>().StartMoveAction(hit.point);
+                mover.StartMoveAction(hit.point);
             }
             return hasHit;
         }
