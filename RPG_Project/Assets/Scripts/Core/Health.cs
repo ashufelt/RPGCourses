@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RPG.Combat {
+namespace RPG.Core {
+
+    [RequireComponent(typeof(Animator))]
 
     public class Health : MonoBehaviour {
 
@@ -32,10 +34,14 @@ namespace RPG.Combat {
 
         private void Die() {
             if (isDead) { return; }
+            isDead = true;
             animator.SetTrigger("die");
+            if (TryGetComponent<ActionScheduler>(out ActionScheduler actionScheduler)) {
+                actionScheduler.CancelAction();
+            }
         }
 
-        public bool hasHP() {
+        public bool isAlive() {
             return health > 0;
         }
 

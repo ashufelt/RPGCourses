@@ -7,19 +7,29 @@ using RPG.Core;
 
 namespace RPG.Movement {
 
+    [RequireComponent(typeof(NavMeshAgent))]
+    [RequireComponent(typeof(ActionScheduler))]
+    [RequireComponent(typeof(Animator))]
+    [RequireComponent(typeof(Health))]
+
     public class Mover : MonoBehaviour, IAction {
 
         NavMeshAgent navMeshAgent;
         ActionScheduler actionScheduler;
         Animator animator;
+        Health health;
 
         private void Start() {
             navMeshAgent = this.GetComponent<NavMeshAgent>();
             actionScheduler = GetComponent<ActionScheduler>();
             animator = this.GetComponent<Animator>();
+            health = this.GetComponent<Health>();
         }
 
         void Update() {
+
+            navMeshAgent.enabled = health.isAlive();
+
             UpdateAnimator();
         }
 

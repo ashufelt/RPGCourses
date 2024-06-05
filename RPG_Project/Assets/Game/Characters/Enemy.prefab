@@ -8,9 +8,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1160442822121856397, guid: b83cbddff28f08c49a80b6f67b99a634, type: 3}
+      propertyPath: weaponRange
+      value: 1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 4638764373567360237, guid: b83cbddff28f08c49a80b6f67b99a634, type: 3}
       propertyPath: initialHealth
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5797248827966217745, guid: b83cbddff28f08c49a80b6f67b99a634, type: 3}
+      propertyPath: m_Speed
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6312153611146721134, guid: b83cbddff28f08c49a80b6f67b99a634, type: 3}
       propertyPath: m_Name
@@ -68,6 +76,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6312153611146721134, guid: b83cbddff28f08c49a80b6f67b99a634, type: 3}
       insertIndex: -1
       addedObject: {fileID: -7869109075893404626}
+    - targetCorrespondingSourceObject: {fileID: 6312153611146721134, guid: b83cbddff28f08c49a80b6f67b99a634, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4609260725102037573}
   m_SourcePrefab: {fileID: 100100000, guid: b83cbddff28f08c49a80b6f67b99a634, type: 3}
 --- !u!4 &48988706088176604 stripped
 Transform:
@@ -91,6 +102,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01d6c24d91876e546b809effffcaa05a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4609260725102037573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 708387155705924515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff3c093ee6b77424bba6ffbb942fae66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chaseDistance: 5
 --- !u!1001 &7507560053366569344
 PrefabInstance:
   m_ObjectHideFlags: 0

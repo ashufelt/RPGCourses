@@ -7,6 +7,11 @@ using static UnityEngine.GraphicsBuffer;
 
 namespace RPG.Combat {
 
+    [RequireComponent(typeof(Health))]
+    [RequireComponent(typeof(Mover))]
+    [RequireComponent(typeof(ActionScheduler))]
+    [RequireComponent(typeof(Animator))]
+
     public class Fighter : MonoBehaviour, IAction {
 
         [SerializeField] float weaponRange = 2f;
@@ -14,9 +19,9 @@ namespace RPG.Combat {
 
         [SerializeField] float attackDamage = 5f;
 
-        float timeSinceLastAttack = 0;
+        float timeSinceLastAttack = Mathf.Infinity;
 
-        Health combatTarget;
+        Health targetHealth;
         Mover mover;
         ActionScheduler actionScheduler;
         Animator animator;
@@ -31,24 +36,24 @@ namespace RPG.Combat {
 
             timeSinceLastAttack += Time.deltaTime;
 
-            if (combatTarget != null && combatTarget.hasHP()) {
+            if (targetHealth != null && targetHealth.isAlive()) {
                 if (IsInRange()) {
                     mover.Cancel();
                     AttackBehavior();
                 }
                 else {
-                    mover.MoveTo(combatTarget.transform.position);
+                    mover.MoveTo(targetHealth.transform.position);
                 }
 
             }
         }
 
         private bool IsInRange() {
-            return Vector3.Distance(this.transform.position, combatTarget.transform.position) < weaponRange;
+            return Vector3.Distance(this.transform.position, targetHealth.transform.position) < weaponRange;
         }
 
         private void AttackBehavior() {
-            transform.LookAt(combatTarget.transform);
+            transform.LookAt(targetHealth.transform);
             if (timeSinceLastAttack >= timeBetweenAttacks) {
                 animator.SetTrigger("attack");
                 timeSinceLastAttack = 0f;
@@ -57,20 +62,21 @@ namespace RPG.Combat {
         }
 
         public void Attack(Health target) {
+            if (target == null) return;
             actionScheduler.StartAction(this);
             animator.ResetTrigger("cancelAttack");
-            combatTarget = target;
+            targetHealth = target;
         }
 
         public void Cancel() {
-            combatTarget = null;
+            targetHealth = null;
             animator.SetTrigger("cancelAttack");
         }
 
         //Animation Event
         void Hit() {
-            if (combatTarget != null) {
-                combatTarget.TakeDamage(attackDamage);
+            if (targetHealth != null) {
+                targetHealth.TakeDamage(attackDamage);
             }
         }
     }
