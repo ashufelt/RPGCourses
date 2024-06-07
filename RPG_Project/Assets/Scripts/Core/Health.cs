@@ -37,7 +37,7 @@ namespace RPG.Core {
             isDead = true;
             animator.SetTrigger("die");
             if (TryGetComponent<ActionScheduler>(out ActionScheduler actionScheduler)) {
-                actionScheduler.CancelAction();
+                actionScheduler.CancelCurrentAction();
             }
         }
 

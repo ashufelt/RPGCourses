@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 602141129297842256, guid: b83cbddff28f08c49a80b6f67b99a634, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 4a66c9ff10753074ab5b12bc0ea8820f, type: 2}
     - target: {fileID: 1160442822121856397, guid: b83cbddff28f08c49a80b6f67b99a634, type: 3}
       propertyPath: weaponRange
       value: 1.6
@@ -115,6 +119,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chaseDistance: 5
+  chaseSpeed: 5
+  suspicionTime: 5
+  patrolPath: {fileID: 0}
+  patrolSpeed: 2
+  waypointWaitTime: 2
 --- !u!1001 &7507560053366569344
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -18,6 +18,7 @@ namespace RPG.Combat {
         [SerializeField] float timeBetweenAttacks = 1f;
 
         [SerializeField] float attackDamage = 5f;
+        bool isAttacking;
 
         float timeSinceLastAttack = Mathf.Infinity;
 
@@ -30,21 +31,22 @@ namespace RPG.Combat {
             mover = GetComponent<Mover>();
             actionScheduler = GetComponent<ActionScheduler>();
             animator = GetComponent<Animator>();
+            isAttacking = false;
         }
 
         private void Update() {
 
             timeSinceLastAttack += Time.deltaTime;
 
-            if (targetHealth != null && targetHealth.isAlive()) {
+            if (targetHealth != null && targetHealth.isAlive() && !isAttacking) {
                 if (IsInRange()) {
+                    isAttacking = true;
                     mover.Cancel();
                     AttackBehavior();
                 }
                 else {
                     mover.MoveTo(targetHealth.transform.position);
                 }
-
             }
         }
 
@@ -58,7 +60,9 @@ namespace RPG.Combat {
                 animator.SetTrigger("attack");
                 timeSinceLastAttack = 0f;
             }
-            
+            else {
+                isAttacking = false;
+            }
         }
 
         public void Attack(Health target) {
@@ -68,16 +72,28 @@ namespace RPG.Combat {
             targetHealth = target;
         }
 
+        public bool CanAttack(GameObject target) {
+            if (target == null) return false;
+            Health targetHealth = target.GetComponent<Health>();
+            return targetHealth != null && targetHealth.isAlive();
+        }
+
         public void Cancel() {
             targetHealth = null;
             animator.SetTrigger("cancelAttack");
+            isAttacking = false;
         }
 
-        //Animation Event
+        //Animation Events
         void Hit() {
-            if (targetHealth != null) {
+            if (targetHealth != null && IsInRange()) {
                 targetHealth.TakeDamage(attackDamage);
             }
+        }
+
+        void AttackDone() {
+            isAttacking = false;
+            Debug.Log("Attack done");
         }
     }
 }

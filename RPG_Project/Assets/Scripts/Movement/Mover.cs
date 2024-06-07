@@ -33,6 +33,10 @@ namespace RPG.Movement {
             UpdateAnimator();
         }
 
+        public void SetSpeed(float speed) {
+            navMeshAgent.speed = speed;
+        }
+
         public void StartMoveAction(Vector3 dest) {
             actionScheduler.StartAction(this);
             MoveTo(dest);
